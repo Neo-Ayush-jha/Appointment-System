@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Verify Email</title>
+</head>
+<body>
+  <div id="status">Verifying your email...</div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+
+    fetch(`http://localhost:3000/api/auth/verify-email?token=${token}`)
+      .then(res => res.json())
+      .then(data => {
+        const el = document.getElementById('status');
+        if (data.success) {
+          el.innerHTML = `<h2>${data.message}</h2>`;
+        } else {
+          el.innerHTML = `<h2 style="color:red">${data.message}</h2>`;
+        }
+      })
+      .catch(() => {
+        document.getElementById('status').innerHTML = `<h2 style="color:red">Something went wrong.</h2>`;
+      });
+  </script>
+</body>
+</html>
