@@ -44,7 +44,7 @@ async function initializeDatabase() {
         time TIME,
         pending_date DATE DEFAULT NULL,
         pending_time TIME DEFAULT NULL,
-        status ENUM('scheduled', 'booked', 'cancelled', 'rescheduled', 'pending_reschedule') DEFAULT 'scheduled',
+        status ENUM('scheduled', 'booked', 'cancelled', 'rescheduled', 'pending_reschedule','completed') DEFAULT 'scheduled',
         service VARCHAR(255),
         duration INT,
         price DECIMAL(10,2),

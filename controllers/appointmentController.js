@@ -204,24 +204,24 @@ exports.rescheduleAppointment = async (req, res) => {
   }
 };
 
-exports.cancelAppointment = async (req, res) => {
+exports.cancelAppointment = (req, res) => {
   const { id } = req.params;
 
-  try {
-    await db
-      .promise()
-      .query(
-        `UPDATE appointments SET status = 'cancelled' WHERE id = ? AND user_id = ?`,
-        [id, req.user.id]
-      );
-    res.json({ success: true, message: "Appointment cancelled successfully" });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: "Error cancelling appointment",
-      error: err.message,
-    });
-  }
+  db.query(
+    `UPDATE appointments SET status = 'cancelled' WHERE id = ? AND user_id = ?`,
+    [id, req.user.id],
+    (err, result) => {
+      if (err) {
+        return res.status(500).json({
+          success: false,
+          message: "Error cancelling appointment",
+          error: err.message,
+        });
+      }
+
+      res.json({ success: true, message: "Appointment cancelled successfully" });
+    }
+  );
 };
 
 exports.getMyClientAppointments = async (req, res) => {

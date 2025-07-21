@@ -1,0 +1,244 @@
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { appointmentAPI, userAPI } from "../services/api";
+import { Appointment, User } from "../types";
+import CreateAppointmentModal from "../components/CreateAppointmentModal";
+import RescheduleModal from "../components/RescheduleModal";
+import EditAppointmentModal from "../components/EditAppointmentModal";
+import {
+  CalendarIcon,
+  PlusIcon,
+  ClockIcon,
+  UserIcon,
+  CurrencyDollarIcon,
+  CheckIcon,
+  XMarkIcon,
+  PencilIcon,
+  EyeIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
+
+const Appointments: React.FC = () => {
+  const { user } = useAuth();
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [professionals, setProfessionals] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [filter, setFilter] = useState<string>("all");
+
+  useEffect(() => {
+    fetchAppointments();
+    if (user?.role === "customer") {
+      fetchProfessionals();
+    }
+  }, [user]);
+
+  const fetchAppointments = async () => {
+    try {
+      setLoading(true);
+      let appointmentsData: Appointment[];
+      if (user?.role === "customer" || user?.role === "admin") {
+        const res = await appointmentAPI.getAllAppointments();
+        appointmentsData = res.appointments || res;
+      } else {
+        appointmentsData = await appointmentAPI.getClientAppointments();
+      }
+      setAppointments(appointmentsData);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchProfessionals = async () => {
+    try {
+      const users = await userAPI.getAllUsers();
+      setAllUsers(users);
+      const professionalUsers = users.filter(
+        (u) => u.role === "doctor" || u.role === "barber"
+      );
+      setProfessionals(professionalUsers);
+    } catch (error) {
+      console.error("Error fetching professionals:", error);
+    }
+  };
+
+  const handleCancelAppointment = async (appointmentId: number) => {
+    if (!window.confirm("Are you sure you want to cancel this appointment?")) return;
+    try {
+      await appointmentAPI.cancelAppointment(appointmentId);
+      fetchAppointments();
+    } catch (error) {
+      console.error("Error cancelling appointment:", error);
+      alert("Failed to cancel appointment");
+    }
+  };
+
+  const handleRescheduleRequest = (appointment: Appointment) => {
+    setSelectedAppointment(appointment);
+    setShowRescheduleModal(true);
+  };
+
+  const handleEdit = (appointment: Appointment) => {
+    setSelectedAppointment(appointment);
+    setShowEditModal(true);
+  };
+
+  const handleApproveReschedule = async (id: number) => {
+    try {
+      await appointmentAPI.approveReschedule(id);
+      fetchAppointments();
+    } catch (error) {
+      console.error("Error approving reschedule:", error);
+    }
+  };
+
+  const handleRejectReschedule = async (id: number) => {
+    try {
+      await appointmentAPI.rejectReschedule(id);
+      fetchAppointments();
+    } catch (error) {
+      console.error("Error rejecting reschedule:", error);
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "completed": return "status-completed";
+      case "cancelled": return "status-cancelled";
+      case "scheduled": return "status-scheduled";
+      case "reschedule_requested":
+      case "reschedule_approved":
+      case "reschedule_rejected": return "status-reschedule-requested";
+      default: return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const filteredAppointments = appointments.filter(a => filter === "all" || a.status === filter);
+
+  const formatCurrency = (amount: number) => new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR"
+  }).format(amount);
+
+  if (loading) return <div className="flex justify-center items-center h-96"><div className="loader" /></div>;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold">Appointments</h1>
+          <p className="text-sm text-gray-500">
+            {user?.role === "customer" ? "Manage your appointments" : "Manage client appointments"}
+          </p>
+        </div>
+        {user?.role === "customer" && (
+          <button className="btn-primary flex items-center" onClick={() => setShowCreateModal(true)}>
+            <PlusIcon className="h-5 w-5 mr-1" /> Book Appointment
+          </button>
+        )}
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        {["all", "booked", "scheduled", "completed", "cancelled", "reschedule_requested"].map((status) => (
+          <button
+            key={status}
+            className={`px-4 py-2 rounded text-sm ${filter === status ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700"}`}
+            onClick={() => setFilter(status)}
+          >
+            {status.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase())}
+          </button>
+        ))}
+      </div>
+
+      <div className="card">
+        {filteredAppointments.length === 0 ? (
+          <div className="text-center py-12">
+            <CalendarIcon className="h-12 w-12 mx-auto text-gray-400" />
+            <h3 className="text-sm font-medium text-gray-900">No appointments found</h3>
+            <p className="text-sm text-gray-500">
+              {filter === "all" ? (user?.role === "customer" ? "You haven't booked any appointments yet." : "No client appointments found.") : `No ${filter} appointments found.`}
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full">
+              <thead>
+                <tr>
+                  <th>Service</th>
+                  <th>{user?.role === "customer" ? "Professional" : "Customer"}</th>
+                  <th>Date & Time</th>
+                  <th>Duration</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredAppointments.map((a) => (
+                  <tr key={a.id} className="hover:bg-gray-50">
+                    <td>{a.service}</td>
+                    <td>{user?.role === "customer" ? a.professional?.name : a.customer?.name}</td>
+                    <td>
+                      {new Date(a.date).toLocaleDateString()}<br />
+                      <span className="text-sm text-gray-500">{a.time}</span>
+                    </td>
+                    <td>{a.duration} min</td>
+                    <td>{formatCurrency(a.price)}</td>
+                    <td><span className={`status-badge ${getStatusColor(a.status)}`}>{a.status.replace("_", " ")}</span></td>
+                    <td className="space-x-2">
+                      <button onClick={() => handleEdit(a)} className="text-blue-600 hover:text-blue-900"><PencilIcon className="h-4 w-4 inline" /> Edit</button>
+                      <button className="text-gray-600 hover:text-gray-900"><EyeIcon className="h-4 w-4 inline" /> View</button>
+                      <button onClick={() => handleCancelAppointment(a.id)} className="text-red-600 hover:text-red-900"><TrashIcon className="h-4 w-4 inline" /> Delete</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {showCreateModal && (
+        <CreateAppointmentModal
+          isOpen={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          professionals={professionals}
+          users={allUsers}
+          onSuccess={fetchAppointments}
+        />
+      )}
+
+      {showRescheduleModal && selectedAppointment && (
+        <RescheduleModal
+          isOpen={showRescheduleModal}
+          onClose={() => {
+            setShowRescheduleModal(false);
+            setSelectedAppointment(null);
+          }}
+          appointment={selectedAppointment}
+          onSuccess={fetchAppointments}
+        />
+      )}
+
+      {showEditModal && selectedAppointment && (
+        <EditAppointmentModal
+          appointment={selectedAppointment}
+          onClose={() => {
+            setShowEditModal(false);
+            setSelectedAppointment(null);
+          }}
+          onSuccess={fetchAppointments}
+          users={allUsers}
+        />
+      )}
+    </div>
+  );
+};
+
+export default Appointments;

@@ -2,20 +2,13 @@ const User = require("../models/User");
 
 // ✅ Get All Users (Admin only)
 exports.getAllUsers = async (req, res) => {
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ success: false, message: "Access denied" });
-  }
-
+  console.log("GET ALL USERS API HIT");
   try {
-    const users = await new Promise((resolve, reject) => {
-      User.getAllUsers((err, data) => {
-        if (err) reject(err);
-        else resolve(data);
-      });
-    });
-
+    const users = await User.getAllUsers();
+    console.log("Users fetched:", users);
     res.status(200).json({ success: true, users });
   } catch (err) {
+    console.error("Failed to fetch users:", err);
     res.status(500).json({
       success: false,
       message: "Failed to fetch users",
@@ -30,9 +23,7 @@ exports.getUserById = async (req, res) => {
   const targetUserId = parseInt(req.params.id);
 
   if (loggedInUser.role !== "admin" && loggedInUser.id !== targetUserId) {
-    return res
-      .status(403)
-      .json({ success: false, message: "Access denied" });
+    return res.status(403).json({ success: false, message: "Access denied" });
   }
 
   try {
@@ -102,7 +93,10 @@ exports.deleteUser = async (req, res) => {
   if (loggedInUser.role !== "admin" && loggedInUser.id !== targetUserId) {
     return res
       .status(403)
-      .json({ success: false, message: "You are not allowed to delete this user." });
+      .json({
+        success: false,
+        message: "You are not allowed to delete this user.",
+      });
   }
 
   try {

@@ -119,18 +119,72 @@ exports.verifyEmail = async (req, res) => {
   });
 };
 
+const pool = require("../config/db");
+
 exports.getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-    if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
+    const userId = req.user.id;
+
+    // Step 1: Get the user details
+    const [userRows] = await pool.query(
+      `SELECT id, name, email, role, is_verified, organization_id FROM users WHERE id = ?`,
+      [userId]
+    );
+
+    if (!userRows.length) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
-    res.status(200).json({ success: true, user });
+
+    const user = userRows[0];
+
+    // Step 2: Get organization details if present
+    let organization = null;
+    if (user.organization_id) {
+      const [orgRows] = await pool.query(
+        `SELECT id, name, description, established_date, address, phone, email FROM organizations WHERE id = ?`,
+        [user.organization_id]
+      );
+      organization = orgRows.length ? orgRows[0] : null;
+    }
+
+    // Step 3: Get all appointments (as customer or professional)
+    const [appointments] = await pool.query(
+      `SELECT 
+        id, user_id, professional_id, date, time, pending_date, pending_time,
+        status, service, duration, price, notes 
+       FROM appointments 
+       WHERE user_id = ? OR professional_id = ?`,
+      [userId, userId]
+    );
+
+    // Step 4: Get all feedbacks given by the user
+    const [feedbacks] = await pool.query(
+      `SELECT 
+        id, appointment_id, rating, experience, suggestion, image_url, created_at 
+       FROM feedbacks 
+       WHERE user_id = ?`,
+      [userId]
+    );
+
+    res.status(200).json({
+      success: true,
+      user: {
+        ...user,
+        organization,
+        appointments,
+        feedbacks,
+      },
+    });
   } catch (err) {
-    res
-      .status(500)
-      .json({ success: false, message: "Server error", error: err.message });
+    console.error("Error fetching user profile:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: err.message,
+    });
   }
 };
+
