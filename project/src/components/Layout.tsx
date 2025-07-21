@@ -39,7 +39,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     ? navigation.filter((item) => item.roles.includes(user.role))
     : [];
 
-  // ⏳ Loading state: avoid rendering UI until auth is ready
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">

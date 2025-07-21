@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { appointmentAPI } from '../services/api';
-import { Appointment } from '../types';
+import React, { useState, useEffect } from "react";
+import { appointmentAPI } from "../services/api";
+import { Appointment } from "../types";
 import {
   UserGroupIcon,
   CurrencyDollarIcon,
@@ -8,7 +8,7 @@ import {
   ClockIcon,
   CheckCircleIcon,
   XCircleIcon,
-} from '@heroicons/react/24/outline';
+} from "@heroicons/react/24/outline";
 
 interface ClientStats {
   name: string;
@@ -37,7 +37,7 @@ const Clients: React.FC = () => {
       setAppointments(appointmentsData);
       calculateClientStats(appointmentsData);
     } catch (error) {
-      console.error('Error fetching client appointments:', error);
+      console.error("Error fetching client appointments:", error);
     } finally {
       setLoading(false);
     }
@@ -45,12 +45,10 @@ const Clients: React.FC = () => {
 
   const calculateClientStats = (appointments: Appointment[]) => {
     const clientMap = new Map<string, ClientStats>();
-
-    appointments.forEach((appointment) => {
-      const clientKey = appointment.customer?.email || '';
-      const clientName = appointment.customer?.name || 'Unknown';
-      const clientEmail = appointment.customer?.email || '';
-
+    appointments?.appointments.forEach((appointment) => {
+      const clientKey = appointment.customer?.email || "";
+      const clientName = appointment.customer?.fullName || "Unknown";
+      const clientEmail = appointment.customer?.email || "";
       if (!clientMap.has(clientKey)) {
         clientMap.set(clientKey, {
           name: clientName,
@@ -65,10 +63,10 @@ const Clients: React.FC = () => {
       const stats = clientMap.get(clientKey)!;
       stats.totalAppointments++;
 
-      if (appointment.status === 'completed') {
+      if (appointment.status === "completed") {
         stats.completedAppointments++;
         stats.totalRevenue += appointment.price;
-      } else if (appointment.status === 'cancelled') {
+      } else if (appointment.status === "cancelled") {
         stats.cancelledAppointments++;
       }
 
@@ -78,41 +76,47 @@ const Clients: React.FC = () => {
       }
     });
 
-    const statsArray = Array.from(clientMap.values()).sort((a, b) => b.totalRevenue - a.totalRevenue);
+    const statsArray = Array.from(clientMap.values()).sort(
+      (a, b) => b.totalRevenue - a.totalRevenue
+    );
     setClientStats(statsArray);
   };
 
   const getClientAppointments = (clientEmail: string) => {
-    return appointments.filter(apt => apt.customer?.email === clientEmail);
+    return appointments.filter((apt) => apt.customer?.email === clientEmail);
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
     }).format(amount);
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed':
-        return 'status-completed';
-      case 'cancelled':
-        return 'status-cancelled';
-      case 'scheduled':
-        return 'status-scheduled';
-      case 'reschedule_requested':
-        return 'status-reschedule-requested';
+      case "completed":
+        return "status-completed";
+      case "cancelled":
+        return "status-cancelled";
+      case "scheduled":
+        return "status-scheduled";
+      case "reschedule_requested":
+        return "status-reschedule-requested";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
+  console.log("Appointments", clientStats);
 
   const totalStats = {
     totalClients: clientStats.length,
-    totalRevenue: clientStats.reduce((sum, client) => sum + client.totalRevenue, 0),
-    totalAppointments: appointments.length,
-    completedAppointments: appointments.filter(apt => apt.status === 'completed').length,
+    totalRevenue: clientStats.reduce(
+      (sum, client) => sum + client.totalRevenue,
+      0
+    ),
+    // totalAppointments: appointments?.appointments?.length,
+    // completedAppointments: appointments?.appointments.filter(apt => apt.status === 'completed').length,
   };
 
   if (loading) {
@@ -142,7 +146,9 @@ const Clients: React.FC = () => {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Clients</p>
-              <p className="text-2xl font-bold text-gray-900">{totalStats.totalClients}</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {totalStats.totalClients}
+              </p>
             </div>
           </div>
         </div>
@@ -154,7 +160,9 @@ const Clients: React.FC = () => {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-              <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalStats.totalRevenue)}</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {formatCurrency(totalStats.totalRevenue)}
+              </p>
             </div>
           </div>
         </div>
@@ -165,8 +173,12 @@ const Clients: React.FC = () => {
               <CalendarIcon className="h-6 w-6" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Appointments</p>
-              <p className="text-2xl font-bold text-gray-900">{totalStats.totalAppointments}</p>
+              <p className="text-sm font-medium text-gray-600">
+                Total Appointments
+              </p>
+              <p className="text-2xl font-bold text-gray-900">
+                {totalStats.totalAppointments}
+              </p>
             </div>
           </div>
         </div>
@@ -178,7 +190,9 @@ const Clients: React.FC = () => {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Completed</p>
-              <p className="text-2xl font-bold text-gray-900">{totalStats.completedAppointments}</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {totalStats.completedAppointments}
+              </p>
             </div>
           </div>
         </div>
@@ -187,14 +201,18 @@ const Clients: React.FC = () => {
       {/* Client List */}
       <div className="card">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold text-gray-900">Client Statistics</h2>
+          <h2 className="text-lg font-semibold text-gray-900">
+            Client Statistics
+          </h2>
           <UserGroupIcon className="h-5 w-5 text-gray-400" />
         </div>
 
         {clientStats.length === 0 ? (
           <div className="text-center py-12">
             <UserGroupIcon className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No clients found</h3>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">
+              No clients found
+            </h3>
             <p className="mt-1 text-sm text-gray-500">
               You haven't served any clients yet.
             </p>
@@ -202,7 +220,10 @@ const Clients: React.FC = () => {
         ) : (
           <div className="space-y-4">
             {clientStats.map((client, index) => (
-              <div key={client.email} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+              <div
+                key={client.email}
+                className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3">
@@ -214,7 +235,9 @@ const Clients: React.FC = () => {
                         </div>
                       </div>
                       <div>
-                        <h3 className="text-sm font-medium text-gray-900">{client.name}</h3>
+                        <h3 className="text-sm font-medium text-gray-900">
+                          {client.name}
+                        </h3>
                         <p className="text-sm text-gray-500">{client.email}</p>
                       </div>
                     </div>
@@ -222,32 +245,49 @@ const Clients: React.FC = () => {
 
                   <div className="flex items-center space-x-6">
                     <div className="text-center">
-                      <p className="text-sm font-medium text-gray-900">{client.totalAppointments}</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        {client.totalAppointments}
+                      </p>
                       <p className="text-xs text-gray-500">Total</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-sm font-medium text-green-600">{client.completedAppointments}</p>
+                      <p className="text-sm font-medium text-green-600">
+                        {client.completedAppointments}
+                      </p>
                       <p className="text-xs text-gray-500">Completed</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-sm font-medium text-red-600">{client.cancelledAppointments}</p>
+                      <p className="text-sm font-medium text-red-600">
+                        {client.cancelledAppointments}
+                      </p>
                       <p className="text-xs text-gray-500">Cancelled</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-sm font-medium text-gray-900">{formatCurrency(client.totalRevenue)}</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        {formatCurrency(client.totalRevenue)}
+                      </p>
                       <p className="text-xs text-gray-500">Revenue</p>
                     </div>
                     <div className="text-center">
                       <p className="text-sm font-medium text-gray-900">
-                        {client.lastAppointment ? new Date(client.lastAppointment).toLocaleDateString() : 'N/A'}
+                        {client.lastAppointment
+                          ? new Date(
+                              client.lastAppointment
+                            ).toLocaleDateString()
+                          : "N/A"}
                       </p>
                       <p className="text-xs text-gray-500">Last Visit</p>
                     </div>
                     <button
-                      onClick={() => setSelectedClient(selectedClient === client.email ? null : client.email)}
+                      onClick={() =>
+                        setSelectedClient(
+                          selectedClient === client.email ? null : client.email
+                        )
+                      }
                       className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                     >
-                      {selectedClient === client.email ? 'Hide' : 'View'} Details
+                      {selectedClient === client.email ? "Hide" : "View"}{" "}
+                      Details
                     </button>
                   </div>
                 </div>
@@ -255,28 +295,44 @@ const Clients: React.FC = () => {
                 {/* Client Appointments Details */}
                 {selectedClient === client.email && (
                   <div className="mt-4 pt-4 border-t">
-                    <h4 className="text-sm font-medium text-gray-900 mb-3">Appointment History</h4>
+                    <h4 className="text-sm font-medium text-gray-900 mb-3">
+                      Appointment History
+                    </h4>
                     <div className="space-y-2">
-                      {getClientAppointments(client.email).map((appointment) => (
-                        <div key={appointment.id} className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded">
-                          <div className="flex items-center space-x-3">
-                            <div>
-                              <p className="text-sm font-medium text-gray-900">{appointment.service}</p>
-                              <p className="text-xs text-gray-500">
-                                {new Date(appointment.date).toLocaleDateString()} at {appointment.time}
-                              </p>
+                      {getClientAppointments(client.email).map(
+                        (appointment) => (
+                          <div
+                            key={appointment.id}
+                            className="flex items-center justify-between py-2 px-3 bg-gray-50 rounded"
+                          >
+                            <div className="flex items-center space-x-3">
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">
+                                  {appointment.service}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  {new Date(
+                                    appointment.date
+                                  ).toLocaleDateString()}{" "}
+                                  at {appointment.time}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <span
+                                className={`status-badge text-xs ${getStatusColor(
+                                  appointment.status
+                                )}`}
+                              >
+                                {appointment.status.replace("_", " ")}
+                              </span>
+                              <span className="text-sm font-medium text-gray-900">
+                                {formatCurrency(appointment.price)}
+                              </span>
                             </div>
                           </div>
-                          <div className="flex items-center space-x-3">
-                            <span className={`status-badge text-xs ${getStatusColor(appointment.status)}`}>
-                              {appointment.status.replace('_', ' ')}
-                            </span>
-                            <span className="text-sm font-medium text-gray-900">
-                              {formatCurrency(appointment.price)}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
                   </div>
                 )}

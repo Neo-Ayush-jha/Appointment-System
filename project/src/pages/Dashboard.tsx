@@ -10,6 +10,7 @@ import {
   CheckCircleIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline";
+import AppointmentCalendar from "../components/AppointmentCalendar";
 
 interface DashboardStats {
   totalAppointments: number;
@@ -239,7 +240,8 @@ const Dashboard: React.FC = () => {
           </>
         )}
       </div>
-
+<br />
+      <AppointmentCalendar />
       {/* Recent Appointments */}
       <div className="card">
         <div className="flex items-center justify-between mb-6">
@@ -269,7 +271,8 @@ const Dashboard: React.FC = () => {
                   key={appointment.id}
                   className={`flex items-center justify-between p-4 rounded-lg transition-colors
     ${
-      appointment.service === "Haircut"? "bg-red-50 hover:bg-red-100"
+      appointment.service === "Haircut"
+        ? "bg-red-50 hover:bg-red-100"
         : "bg-green-50 hover:bg-green-100"
     }`}
                 >

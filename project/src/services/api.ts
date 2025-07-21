@@ -80,6 +80,10 @@ export const organizationAPI = {
   
   assignUserToOrganization: (data: AssignUserToOrganization): Promise<void> =>
     api.put('/organizations/assign/', data).then(res => res.data),
+
+  isApprove: (id: number): Promise<Appointment[]> =>
+    api.post(`/organizations/approve/${id}`).then(res => res.data),
+  
 };
 
 // Appointment APIs

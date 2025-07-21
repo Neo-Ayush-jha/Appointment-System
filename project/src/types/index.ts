@@ -81,6 +81,18 @@ export interface RescheduleRequest {
   time: string;
 }
 
+
+export interface FeedbackData {
+  professional_id: number;
+  user_id: number;
+  date: string;
+  time: string;
+  experience: string;
+  suggestion: string;
+  image_url?: string;
+  rating: number;
+}
+
 export interface AssignUserToOrganization {
   userId: number;
   organizationId: number;

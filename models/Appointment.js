@@ -29,7 +29,7 @@ const Appointment = {
     );
   },
 
-  // ✅ Request reschedule (by customer)
+  //  Request reschedule (by customer)
   requestReschedule: (appointmentId, userId, date, time, cb) => {
     db.query(
       `UPDATE appointments 
@@ -40,7 +40,7 @@ const Appointment = {
     );
   },
 
-  // ✅ Approve reschedule (by professional)
+  //  Approve reschedule (by professional)
   approveReschedule: (appointmentId, professionalId, cb) => {
     db.query(
       `UPDATE appointments 
@@ -53,7 +53,7 @@ const Appointment = {
     );
   },
 
-  // ✅ Reject reschedule (by professional)
+  //  Reject reschedule (by professional)
   rejectReschedule: (appointmentId, professionalId, cb) => {
     db.query(
       `UPDATE appointments 

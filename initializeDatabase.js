@@ -29,6 +29,7 @@ async function initializeDatabase() {
         role ENUM('doctor', 'barber', 'customer', 'admin') DEFAULT 'customer',
         is_verified BOOLEAN DEFAULT FALSE,
         organization_id INT DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (organization_id) REFERENCES organizations(id)
           ON DELETE SET NULL
       )
@@ -44,11 +45,12 @@ async function initializeDatabase() {
         time TIME,
         pending_date DATE DEFAULT NULL,
         pending_time TIME DEFAULT NULL,
-        status ENUM('scheduled', 'booked', 'cancelled', 'rescheduled', 'pending_reschedule','completed') DEFAULT 'scheduled',
+        status ENUM('scheduled', 'booked', 'cancelled', 'rescheduled', 'pending_reschedule', 'completed') DEFAULT 'scheduled',
         service VARCHAR(255),
         duration INT,
         price DECIMAL(10,2),
         notes TEXT,
+        is_approved BOOLEAN DEFAULT FALSE,
         FOREIGN KEY (user_id) REFERENCES users(id),
         FOREIGN KEY (professional_id) REFERENCES users(id)
       )
@@ -64,7 +66,7 @@ async function initializeDatabase() {
         rating FLOAT NOT NULL,
         experience TEXT,
         suggestion TEXT,
-        image_url VARCHAR(255),
+        image_url VARCHAR(255) DEFAULT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         
         FOREIGN KEY (appointment_id) REFERENCES appointments(id),

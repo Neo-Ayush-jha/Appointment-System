@@ -45,7 +45,22 @@ const User = {
   // Get all users
   getAllUsers: async () => {
     const [rows] = await db.query(
-      "SELECT id, name, email, role, is_verified FROM users"
+      `SELECT 
+      u.id,
+      u.name,
+      u.email,
+      u.role,
+      u.is_verified,
+      u.created_at,
+      u.organization_id,
+      o.name AS organization_name,
+      o.description AS organization_description,
+      o.established_date,
+      o.address AS organization_address,
+      o.phone AS organization_phone,
+      o.email AS organization_email
+    FROM users u
+    LEFT JOIN organizations o ON u.organization_id = o.id`
     );
     return rows;
   },

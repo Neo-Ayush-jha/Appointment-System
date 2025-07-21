@@ -1,11 +1,10 @@
 const User = require("../models/User");
 
-// ✅ Get All Users (Admin only)
+// Get All Users (Admin only)
 exports.getAllUsers = async (req, res) => {
   console.log("GET ALL USERS API HIT");
   try {
     const users = await User.getAllUsers();
-    console.log("Users fetched:", users);
     res.status(200).json({ success: true, users });
   } catch (err) {
     console.error("Failed to fetch users:", err);
@@ -17,7 +16,7 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-// ✅ Get user by ID (admin can get anyone, others only themselves)
+// Get user by ID (admin can get anyone, others only themselves)
 exports.getUserById = async (req, res) => {
   const loggedInUser = req.user;
   const targetUserId = parseInt(req.params.id);
@@ -43,7 +42,7 @@ exports.getUserById = async (req, res) => {
   }
 };
 
-// ✅ Update user (admin can update anyone, others only themselves, and cannot change role)
+// Update user (admin can update anyone, others only themselves, and cannot change role)
 exports.updateUser = async (req, res) => {
   const { name, role } = req.body;
   const loggedInUser = req.user;
@@ -85,7 +84,7 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-// ✅ Delete user (admin can delete anyone, user can delete themselves only)
+// Delete user (admin can delete anyone, user can delete themselves only)
 exports.deleteUser = async (req, res) => {
   const loggedInUser = req.user;
   const targetUserId = parseInt(req.params.id);

@@ -27,7 +27,7 @@ const Users: React.FC = () => {
     try {
       setLoading(true);
       const usersData = await userAPI.getAllUsers();
-      setUsers(usersData);
+      setUsers(usersData.users);
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
@@ -91,6 +91,7 @@ const Users: React.FC = () => {
       barber: users.filter(u => u.role === 'barber').length,
       customer: users.filter(u => u.role === 'customer').length,
     };
+    console.log("User",users)
     return stats;
   };
 

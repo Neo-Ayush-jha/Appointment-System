@@ -43,7 +43,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
     setFormData({
       ...formData,
       professional_id: 0,
-      service: role, // set role as service
+      service: role, 
       duration: 10,
       price: 150,
     });
@@ -85,7 +85,6 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
     setLoading(true);
     setError("");
 
-    // ✅ Validate duration minimum
     if (formData.duration < 10) {
       setError("Minimum duration is 10 minutes.");
       setLoading(false);
@@ -93,7 +92,6 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
     }
 
     try {
-      // 🔁 Price auto-calculated before sending
       const appointmentData = {
         ...formData,
         price: formData.duration * 15,

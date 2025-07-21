@@ -7,7 +7,7 @@ interface EditAppointmentModalProps {
   appointment: Appointment;
   onClose: () => void;
   onSuccess: () => void;
-  users?: User[]; // optional, if you want to allow reassigning professional
+  users?: User[]; 
 }
 
 const EditAppointmentModal: React.FC<EditAppointmentModalProps> = ({
