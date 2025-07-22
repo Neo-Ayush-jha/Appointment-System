@@ -15,7 +15,7 @@ const Footer: React.FC = () => {
             <div className="flex space-x-4">
               <div className="flex items-center text-gray-300">
                 <PhoneIcon className="h-4 w-4 mr-2" />
-                <span className="text-sm">+1 (555) 123-4567</span>
+                <span className="text-sm">+1 (91) 91176-85337</span>
               </div>
             </div>
           </div>
@@ -45,7 +45,7 @@ const Footer: React.FC = () => {
             <div className="space-y-2 text-gray-300">
               <div className="flex items-center">
                 <EnvelopeIcon className="h-4 w-4 mr-2" />
-                <span className="text-sm">support@bookingapp.com</span>
+                <span className="text-sm">ayush.kumar20242@lpu.in</span>
               </div>
               <div className="flex items-center">
                 <MapPinIcon className="h-4 w-4 mr-2" />
@@ -56,7 +56,7 @@ const Footer: React.FC = () => {
         </div>
         
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 BookingApp. All rights reserved.</p>
+          <p>&copy; 2025 BookingApp. All rights reserved.</p>
         </div>
       </div>
     </footer>
