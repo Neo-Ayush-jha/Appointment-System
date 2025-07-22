@@ -59,7 +59,7 @@ const EditAppointmentModal: React.FC<EditAppointmentModalProps> = ({
     setError("");
 
     try {
-      await appointmentAPI.updateAppointment(appointment.id, formData);
+      await appointmentAPI.requestReschedule(appointment.id, formData);
       onSuccess();
       onClose();
     } catch (err: any) {

@@ -31,8 +31,8 @@ const Organizations: React.FC = () => {
     try {
       setLoading(true);
       const orgsData = await organizationAPI.getAllOrganizations();
-
-      const approvedOrgs = (orgsData.organizations || []).filter((org) => {
+      console.log("orgsData", orgsData);
+      const approvedOrgs = (orgsData || []).filter((org) => {
         if (currentUser?.role === "admin") {
           return true;
         } else {
@@ -52,7 +52,7 @@ const Organizations: React.FC = () => {
   const fetchUsers = async () => {
     try {
       const usersData = await userAPI.getAllUsers();
-      setUsers(usersData.users);
+      setUsers(usersData);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -224,11 +224,11 @@ const Organizations: React.FC = () => {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center text-sm text-gray-600">
                       <UsersIcon className="h-4 w-4 mr-1" />
-                      <span>Members ({org.members.length})</span>
+                      <span>Members ({org.members?.length})</span>
                     </div>
                   </div>
 
-                  {org.members.length === 0 ? (
+                  {org.members?.length === 0 ? (
                     <p className="text-sm text-gray-500 italic">
                       No members assigned
                     </p>

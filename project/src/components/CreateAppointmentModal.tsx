@@ -7,6 +7,7 @@ interface CreateAppointmentModalProps {
   isOpen: boolean;
   onClose: () => void;
   users: User[];
+  professionals: User[]; 
   onSuccess: () => void;
 }
 
@@ -112,7 +113,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
       });
       setSelectedRole("");
       setFilteredProfessionals([]);
-      setRoleServices([]);
+      // setRoleServices([]);
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to create appointment");
     } finally {

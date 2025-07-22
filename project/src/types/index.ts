@@ -2,7 +2,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  role: 'customer' | 'doctor' | 'barber' | 'admin';
+  role: "customer" | "doctor" | "barber" | "admin";
   organization_id?: number;
   created_at: string;
   updated_at: string;
@@ -19,6 +19,7 @@ export interface Organization {
   created_at: string;
   updated_at: string;
   members?: User[];
+  is_approved: number;
 }
 
 export interface Appointment {
@@ -30,14 +31,22 @@ export interface Appointment {
   service: string;
   duration: number;
   price: number;
-  status: 'scheduled' | 'completed' | 'cancelled' | 'reschedule_requested' | 'reschedule_approved' | 'reschedule_rejected';
+  status:
+    | "scheduled"
+    | "completed"
+    | "cancelled"
+    | "reschedule_requested"
+    | "reschedule_approved"
+    | "reschedule_rejected";
   notes?: string;
   created_at: string;
   updated_at: string;
   customer?: User;
   professional?: User;
+  client?: User;
   reschedule_date?: string;
   reschedule_time?: string;
+  feedback?: FeedbackData | null;
 }
 
 export interface AuthResponse {
@@ -54,7 +63,7 @@ export interface SignupData {
   name: string;
   email: string;
   password: string;
-  role: 'customer' | 'doctor' | 'barber';
+  role: "customer" | "doctor" | "barber";
 }
 
 export interface CreateAppointmentData {
@@ -81,10 +90,9 @@ export interface RescheduleRequest {
   time: string;
 }
 
-
 export interface FeedbackData {
-  professional_id: number;
-  user_id: number;
+  professional_id: User;
+  user_id: User;
   date: string;
   time: string;
   experience: string;

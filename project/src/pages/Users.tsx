@@ -27,7 +27,7 @@ const Users: React.FC = () => {
     try {
       setLoading(true);
       const usersData = await userAPI.getAllUsers();
-      setUsers(usersData.users);
+      setUsers(usersData);
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {

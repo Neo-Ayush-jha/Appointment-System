@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { appointmentAPI, userAPI, organizationAPI } from "../services/api";
-import { Appointment, User, Organization } from "../types";
+import { Appointment } from "../types";
 import {
   CalendarIcon,
   UsersIcon,
@@ -41,13 +41,13 @@ const Dashboard: React.FC = () => {
 
         if (user?.role === "customer" || user?.role === "admin") {
           const response = await appointmentAPI.getAllAppointments();
-          appointmentsData = response?.appointments || [];
-          console.log("appointmentsData = ", appointmentsData);
+          appointmentsData = response || [];
         } else if (user?.role === "doctor" || user?.role === "barber") {
           const response = await appointmentAPI.getClientAppointments();
-          appointmentsData = response?.appointments || [];
+          appointmentsData = response || [];
           console.log("appointmentsData = ", appointmentsData);
         }
+        console.log("appointmentsData = ", appointmentsData);
 
         setAppointments(appointmentsData.slice(0, 5));
 
@@ -60,7 +60,7 @@ const Dashboard: React.FC = () => {
         ).length;
         const totalRevenue = appointmentsData
           .filter((apt) => apt.status === "completed")
-          .reduce((sum, apt) => sum + parseFloat(apt?.price), 0);
+          .reduce((sum, apt) => sum + parseFloat(String(apt?.price)), 0);
 
         let additionalStats = {};
 
@@ -240,7 +240,7 @@ const Dashboard: React.FC = () => {
           </>
         )}
       </div>
-<br />
+      <br />
       <AppointmentCalendar />
       {/* Recent Appointments */}
       <div className="card">
@@ -285,9 +285,11 @@ const Dashboard: React.FC = () => {
                         </p>
 
                         <p className="text-sm text-gray-500">
-                          {user?.role === "customer"
-                            ? `with ${appointment.professional?.name}`
-                            : `with ${appointment.user?.name}`}
+                          {`with ${
+                            user?.role === "customer"
+                              ? appointment.professional?.name
+                              : appointment.client?.name || appointment.customer?.name
+                          }`}
                         </p>
                       </div>
                     </div>
@@ -313,7 +315,7 @@ const Dashboard: React.FC = () => {
 
                     <div className="text-right">
                       <p className="text-sm font-medium text-gray-900">
-                        {formatCurrency(parseFloat(appointment?.price))}
+                        {formatCurrency(appointment?.price) }
                       </p>
                       <p className="text-sm text-gray-500">
                         {appointment.duration} min

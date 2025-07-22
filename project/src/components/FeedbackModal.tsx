@@ -19,14 +19,16 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
 }) => {
   const [formData, setFormData] = useState({
     professional_id: appointment.professional_id,
-    user_id: appointment.user_id, 
+    user_id: appointment.customer?.id, 
     date: appointment.date,
     time: appointment.time,
     experience: "",
     suggestion: "",
     image_url: "",
     rating: 0,
+    recommend: false,               
   });
+  console.log("Initial formData:", appointment);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [loading, setLoading] = useState(false);
@@ -62,13 +64,14 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
       onClose();
       setFormData({
         professional_id: appointment.professional_id,
-        user_id: appointment.user_id,
+        user_id: appointment.customer?.id,
         date: appointment.date,
         time: appointment.time,
         experience: "",
         suggestion: "",
         image_url: "",
         rating: 0,
+        recommend: false,               
       });
 
       setSelectedImage(null);

@@ -47,28 +47,72 @@ A modern React application built with Vite and TypeScript for managing appointme
 ## Project Structure
 
 ```
-src/
-├── components/          # Reusable components
-│   ├── Layout.tsx
-│   ├── ProtectedRoute.tsx
-│   ├── CreateAppointmentModal.tsx
-│   ├── RescheduleModal.tsx
-│   └── CreateOrganizationModal.tsx
-├── contexts/           # React contexts
-│   └── AuthContext.tsx
-├── pages/              # Page components
-│   ├── Login.tsx
-│   ├── Signup.tsx
-│   ├── Dashboard.tsx
-│   ├── Appointments.tsx
-│   ├── Users.tsx
-│   ├── Organizations.tsx
-│   └── Clients.tsx
-├── services/           # API services
-│   └── api.ts
-├── types/              # TypeScript types
-│   └── index.ts
-└── App.tsx             # Main app component
+project/
+│
+├── node_modules/              # Installed dependencies
+├── dist/                      # Production build output (auto-generated)
+│
+├── public/                    # Static assets (optional with Vite)
+│
+├── src/                       # Main source folder
+│
+│   ├── components/            # Reusable UI components
+│   │   ├── landing/           # Components for landing page sections
+│   │   │   ├── CTASection.tsx
+│   │   │   ├── FeatureSection.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   ├── HeroSection.tsx
+│   │   │   ├── HowItWorksSection.tsx
+│   │   │   ├── ServiceSection.tsx
+│   │   │   ├── StatsSection.tsx
+│   │   │   └── TestimonialsSection.tsx
+│   │   ├── AppointmentCalendar.tsx
+│   │   ├── ConfirmDeleteModal.tsx
+│   │   ├── CreateAppointmentModal.tsx
+│   │   ├── CreateOrganizationModal.tsx
+│   │   ├── EditAppointmentModal.tsx
+│   │   ├── FeedbackModal.tsx
+│   │   ├── Navbar.tsx
+│   │   ├── ProtectedRoute.tsx
+│   │   ├── RescheduleModal.tsx
+│   │   ├── ViewAppointments.tsx
+│   │   └── Layout.tsx
+│
+│   ├── contexts/              # React Context API (global state)
+│   │   └── AuthContext.tsx
+│
+│   ├── pages/                 # Top-level pages (routed by React Router)
+│   │   ├── Appointments.tsx
+│   │   ├── Clients.tsx
+│   │   ├── Dashboard.tsx
+│   │   ├── Landing.tsx
+│   │   ├── Login.tsx
+│   │   ├── Organizations.tsx
+│   │   ├── Signup.tsx
+│   │   └── Users.tsx
+│
+│   ├── services/              # API handlers
+│   │   └── api.ts
+│
+│   ├── types/                 # TypeScript types/interfaces
+│   │   └── index.ts
+│
+│   ├── App.tsx                # Main app layout
+│   ├── main.tsx               # App entry point
+│   └── index.css              # Global styles
+│
+├── .env                       # Environment variables
+├── .env.example               # Sample .env file
+├── .gitignore                 # Files to ignore in Git
+├── index.html                 # HTML template for Vite
+├── package.json               # Project metadata and scripts
+├── postcss.config.js          # PostCSS config (used by Tailwind)
+├── tailwind.config.js         # Tailwind CSS custom config
+├── tsconfig.json              # TypeScript config
+├── tsconfig.node.json         # TypeScript config for Node
+├── vite-env.d.ts              # Vite env type definitions
+└── vite.config.ts             # Vite configuration
+
 ```
 
 ## User Roles

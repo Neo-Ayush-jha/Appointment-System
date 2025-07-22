@@ -52,13 +52,13 @@ export const authAPI = {
     api.post('/auth/signup', data).then(res => res.data),
   
   getProfile: (): Promise<User> =>
-    api.get('/auth/profile').then(res => res.data),
+    api.get('/auth/profile').then(res => res.data?.user),
 };
 
 // User APIs
 export const userAPI = {
   getAllUsers: (): Promise<User[]> =>
-    api.get('/users').then(res => res.data),
+    api.get('/users').then(res => res.data.users),
   
   getUserById: (id: number): Promise<User> =>
     api.get(`/users/${id}`).then(res => res.data),
@@ -76,7 +76,7 @@ export const organizationAPI = {
     api.post('/organizations/create', data).then(res => res.data),
   
   getAllOrganizations: (): Promise<Organization[]> =>
-    api.get('/organizations/').then(res => res.data),
+    api.get('/organizations/').then(res => res.data?.organizations),
   
   assignUserToOrganization: (data: AssignUserToOrganization): Promise<void> =>
     api.put('/organizations/assign/', data).then(res => res.data),
@@ -92,10 +92,10 @@ export const appointmentAPI = {
     api.post('/appointments', data).then(res => res.data),
   
   getAllAppointments: (): Promise<Appointment[]> =>
-    api.get('/appointments').then(res => res.data),
+    api.get('/appointments').then(res => res.data?.appointments),
   
   getAppointmentById: (id: number): Promise<Appointment> =>
-    api.get(`/appointments/${id}`).then(res => res.data),
+    api.get(`/appointments/${id}`).then(res => res.data?.appointment),
   
   cancelAppointment: (id: number): Promise<void> =>
     api.delete(`/appointments/${id}`).then(res => res.data),
@@ -110,7 +110,7 @@ export const appointmentAPI = {
     api.patch(`/appointments/${id}/reschedule-reject`).then(res => res.data),
   
   getClientAppointments: (): Promise<Appointment[]> =>
-    api.get('/appointments/my/clients').then(res => res.data),
+    api.get('/appointments/my/clients').then(res => res.data?.appointments),
   
   submitFeedback: (id: number, feedback: any): Promise<void> =>
     api.post(`/appointments/${id}/feedback`, feedback).then(res => res.data),

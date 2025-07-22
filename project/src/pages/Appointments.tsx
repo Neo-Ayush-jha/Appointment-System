@@ -8,17 +8,11 @@ import EditAppointmentModal from "../components/EditAppointmentModal";
 import {
   CalendarIcon,
   PlusIcon,
-  ClockIcon,
-  UserIcon,
-  CurrencyDollarIcon,
-  CheckIcon,
-  XMarkIcon,
   PencilIcon,
   EyeIcon,
   TrashIcon,
   ChatBubbleBottomCenterTextIcon,
 } from "@heroicons/react/24/outline";
-import ViewAppointmentModal from "../components/ViewAppointmentModal";
 import ViewAppointments from "../components/ViewAppointments";
 import FeedbackModal from "../components/FeedbackModal";
 
@@ -52,7 +46,7 @@ const Appointments: React.FC = () => {
         appointmentId
       );
       console.log(appointment);
-      setViewedAppointment(appointment?.appointment);
+      setViewedAppointment(appointment);
       setShowViewModal(true);
     } catch (error) {
       console.error("Error fetching appointment:", error);
@@ -67,12 +61,11 @@ const Appointments: React.FC = () => {
 
       if (user?.role === "customer" || user?.role === "admin") {
         const res = await appointmentAPI.getAllAppointments();
-        appointmentsData = Array.isArray(res) ? res : res.appointments || [];
+        appointmentsData = Array.isArray(res) ? res : res || [];
       } else {
         const res = await appointmentAPI.getClientAppointments();
-        appointmentsData = Array.isArray(res) ? res : res.appointments || [];
+        appointmentsData = Array.isArray(res) ? res : res || [];
       }
-      console.log("Client appointments response:", appointmentsData);
 
       setAppointments(appointmentsData);
     } catch (error) {
@@ -87,9 +80,10 @@ const Appointments: React.FC = () => {
       const users = await userAPI.getAllUsers();
       setAllUsers(users);
       console.log("All users:", users);
-      const professionalUsers = users?.users.filter(
-        (u) => u.role === "doctor" || u.role === "barber"
+      const professionalUsers = users?.filter(
+        (u: User) => u.role === "doctor" || u.role === "barber"
       );
+
       setProfessionals(professionalUsers);
     } catch (error) {
       console.error("Error fetching professionals:", error);
@@ -108,10 +102,10 @@ const Appointments: React.FC = () => {
     }
   };
 
-  const handleRescheduleRequest = (appointment: Appointment) => {
-    setSelectedAppointment(appointment);
-    setShowRescheduleModal(true);
-  };
+  // const handleRescheduleRequest = (appointment: Appointment) => {
+  //   setSelectedAppointment(appointment);
+  //   setShowRescheduleModal(true);
+  // };
 
   const handleGiveFeedback = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
@@ -123,23 +117,23 @@ const Appointments: React.FC = () => {
     setShowEditModal(true);
   };
 
-  const handleApproveReschedule = async (id: number) => {
-    try {
-      await appointmentAPI.approveReschedule(id);
-      fetchAppointments();
-    } catch (error) {
-      console.error("Error approving reschedule:", error);
-    }
-  };
+  // const handleApproveReschedule = async (id: number) => {
+  //   try {
+  //     await appointmentAPI.approveReschedule(id);
+  //     fetchAppointments();
+  //   } catch (error) {
+  //     console.error("Error approving reschedule:", error);
+  //   }
+  // };
 
-  const handleRejectReschedule = async (id: number) => {
-    try {
-      await appointmentAPI.rejectReschedule(id);
-      fetchAppointments();
-    } catch (error) {
-      console.error("Error rejecting reschedule:", error);
-    }
-  };
+  // const handleRejectReschedule = async (id: number) => {
+  //   try {
+  //     await appointmentAPI.rejectReschedule(id);
+  //     fetchAppointments();
+  //   } catch (error) {
+  //     console.error("Error rejecting reschedule:", error);
+  //   }
+  // };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -252,12 +246,15 @@ const Appointments: React.FC = () => {
               </thead>
               <tbody className="divide-y divide-gray-200 ">
                 {filteredAppointments.map((a) => (
-                  <tr key={a.id} className="hover:bg-gray-50 text-center space-y-16">
+                  <tr
+                    key={a.id}
+                    className="hover:bg-gray-50 text-center space-y-16"
+                  >
                     <td>{a.service}</td>
                     <td>
                       {user?.role === "customer"
                         ? a.professional?.name
-                        : a.client?.name}
+                        : a.customer?.name}
                     </td>
                     <td>
                       {new Date(a.date).toLocaleDateString()}
@@ -283,7 +280,8 @@ const Appointments: React.FC = () => {
                       <button
                         onClick={() =>
                           handleView(
-                            user.role === "customer" ? a.id : a.appointment_id
+                            // user.role === "customer" ? a.id : a.appointment_id
+                            user?.role === "customer" ? a.id : a.id 
                           )
                         }
                         className="text-gray-600 hover:text-gray-900"
@@ -308,7 +306,8 @@ const Appointments: React.FC = () => {
                                 onClick={() => handleGiveFeedback(a)}
                                 className="text-green-600 hover:text-green-900"
                               >
-                               <ChatBubbleBottomCenterTextIcon className="h-5 w-5 text-green-600 inline" />  Give Feedback
+                                <ChatBubbleBottomCenterTextIcon className="h-5 w-5 text-green-600 inline" />{" "}
+                                Give Feedback
                               </button>
                             ) : (
                               <span className="text-gray-500 italic">

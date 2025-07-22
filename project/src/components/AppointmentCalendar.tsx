@@ -37,7 +37,7 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
       } else if (user?.role === "doctor" || user?.role === "barber") {
         appointmentsData = await appointmentAPI.getClientAppointments();
       }
-
+console.log("Fetched appointments:", appointmentsData);
       setAppointments(appointmentsData);
     } catch (error) {
       console.error("Error fetching appointments:", error);
@@ -48,7 +48,7 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
 
   const getAppointmentsForDate = (date: Date) => {
     const dateString = date.toISOString().split("T")[0]; 
-    return appointments.appointments.filter((apt) => {
+    return appointments.filter((apt: Appointment) => {
       const aptDateString = new Date(apt.date).toISOString().split("T")[0];
       return aptDateString === dateString;
     });
@@ -122,14 +122,14 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
           Appointment Calendar
         </h2>
         <div className="text-sm text-gray-500">
-          Total: {appointments.length} appointments
+          Total: {appointments?.length} appointments
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Calendar */}
         <div className="calendar-container">
-          <style jsx>{`
+          <style>{`
             .calendar-container :global(.react-calendar) {
               width: 100%;
               border: 1px solid #e5e7eb;
@@ -210,11 +210,11 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
             ) : (
               getSelectedDateAppointments()
                 .sort(
-                  (a, b) =>
+                  (a: Appointment, b: Appointment) =>
                     new Date(`${a.date}T${a.time}`).getTime() -
                     new Date(`${b.date}T${b.time}`).getTime()
                 )
-                .map((appointment) => (
+                .map((appointment: Appointment) => (
                   <div
                     key={appointment.id}
                     className={`border rounded-lg p-4 ${getStatusColor(

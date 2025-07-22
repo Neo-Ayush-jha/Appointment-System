@@ -42,8 +42,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         try {
           const profile = await authAPI.getProfile();
-          setUser(profile.user); // ✅ only set profile.user
-          sessionStorage.setItem('user', JSON.stringify(profile.user));
+          setUser(profile); // ✅ only set profile.user
+          sessionStorage.setItem('user', JSON.stringify(profile));
         } catch (error) {
           console.error('Session expired or invalid. Logging out.');
           sessionStorage.removeItem('token');

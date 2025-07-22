@@ -5,9 +5,7 @@ import {
   UserGroupIcon,
   CurrencyDollarIcon,
   CalendarIcon,
-  ClockIcon,
   CheckCircleIcon,
-  XCircleIcon,
 } from "@heroicons/react/24/outline";
 
 interface ClientStats {
@@ -43,11 +41,12 @@ const Clients: React.FC = () => {
     }
   };
 
+  console.log("Appointments fetched:", appointments);
   const calculateClientStats = (appointments: Appointment[]) => {
     const clientMap = new Map<string, ClientStats>();
-    appointments?.appointments.forEach((appointment) => {
+    appointments.forEach((appointment) => {
       const clientKey = appointment.customer?.email || "";
-      const clientName = appointment.customer?.fullName || "Unknown";
+      const clientName = appointment.customer?.name || "Unknown";
       const clientEmail = appointment.customer?.email || "";
       if (!clientMap.has(clientKey)) {
         clientMap.set(clientKey, {
@@ -115,8 +114,14 @@ const Clients: React.FC = () => {
       (sum, client) => sum + client.totalRevenue,
       0
     ),
-    // totalAppointments: appointments?.appointments?.length,
-    // completedAppointments: appointments?.appointments.filter(apt => apt.status === 'completed').length,
+    totalAppointments: clientStats.reduce(
+      (sum, client) => sum + client.totalAppointments,
+      0
+    ),
+    completedAppointments: clientStats.reduce(
+      (sum, client) => sum + client.completedAppointments,
+      0
+    ),
   };
 
   if (loading) {
@@ -221,7 +226,7 @@ const Clients: React.FC = () => {
           <div className="space-y-4">
             {clientStats.map((client, index) => (
               <div
-                key={client.email}
+                key={`${client.email}-${index}`}
                 className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
               >
                 <div className="flex items-center justify-between">
