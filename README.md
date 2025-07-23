@@ -54,7 +54,7 @@ EMAIL_PASS=your_email_password
 node server.js
 ````
 ### Project Structure
-backend/
+
 │
 ├── config/
 │   └── db.js               # MySQL connection
