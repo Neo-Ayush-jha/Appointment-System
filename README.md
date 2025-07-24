@@ -54,7 +54,8 @@ EMAIL_PASS=your_email_password
 node server.js
 ````
 ### Project Structure
-
+```
+Appointment-System
 │
 ├── config/
 │   └── db.js               # MySQL connection
@@ -95,7 +96,7 @@ node server.js
 ├── server.js              # Entry point
 ├── package.json
 └── README.md
-
+```
 
 ### User Roles
 -   Customer: Can book and manage own appointments
