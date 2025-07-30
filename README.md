@@ -28,7 +28,7 @@ This is the backend for the Appointment Booking System. It provides RESTful APIs
 - **MySQL** (via `mysql2`)
 - **JWT** for authentication
 - **Multer** for file uploads
-- **Nodemailer** for email notifications
+- **Nodemailer** for email notifications Mailtrap (https://mailtrap.io/)
 - **dotenv** for environment variables
 ---
 
