@@ -114,7 +114,7 @@ Appointment-System
 
 You can test all the API endpoints using the Postman collection provided below:
 
- [Postman Collection Link](https://solar-meadow-640134.postman.co/workspace/My-Workspace~3b1ec586-7551-49f0-87c2-2af3e979b42f/collection/22737106-d7337984-2674-4ac6-a4bf-769fa332b82f?action=share&source=copy-link&creator=22737106)
+ [Postman Collection Link](https://documenter.getpostman.com/view/22737106/2sB3B8stPA)
 
 ###  How to Use
 
